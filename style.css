@@ -4,7 +4,6 @@ main {
     border: 1px solid black;
     margin: 0 auto;
     display: flex;
-    flex-grow: 1;
   }
 
 .left-block {
@@ -19,7 +18,7 @@ main {
 }
 
 .buttons {
-    padding-top: 10px;
+    margin-top: 15px;
 }
 
 .buttons button {
@@ -36,7 +35,7 @@ main {
     transition: all 0.5s;
     color: #FFF;
     background-color: #FE8800;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .buttons button:hover {
@@ -45,9 +44,20 @@ main {
     border: 1px solid #000000;
 }
 
-#inp {
-    display: block;
-    margin: 0 auto;
+.system-icons {
     width: 75%;
-    margin-bottom: 10px;
+    margin: 0 auto;
 }
+
+.system-icons img {
+    width: 60px;
+    height: 60px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+
+

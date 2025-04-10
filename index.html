@@ -15,9 +15,27 @@
         
         <div class="right-block">
             <div class="buttons">
-                <input type="file" id="inp" name="imageLoader"/>
+                <button onclick="document.getElementById('choose-background').click()">Choose Background</button>
+                <input type="file" id="choose-background" style="display: none;"/>
+
                 <button id="clear" type="button">Clear</button>
                 <button id="download" type="button">Download</button>
+            </div>
+            <div class="system-icons">
+                <div class="row">
+                    <img src="images/cctv.png">
+                    <img src="images/intruderalarm.png">
+                </div>
+
+                <div class="row">
+                    <img src="images/firealarm.png">
+                    <img src="images/access.png">
+                </div>
+
+                <div class="row">
+                    <img src="images/panicalarm.png">
+                    <img src="images/extinguisher.png">
+                </div>
             </div>
         </div>
 
