@@ -1,5 +1,3 @@
-import { addCameraCoverage } from './camera-coverage.js';
-
 export function initDragDropIcons(fabricCanvas) {
     const icons = document.querySelectorAll('.system-icons img');
 
@@ -49,12 +47,6 @@ export function initDragDropIcons(fabricCanvas) {
 
             fabricCanvas.add(img);
             fabricCanvas.setActiveObject(img);
-
-            // Check if the dropped icon is the camera icon (based on the src)
-            if (imgSrc.includes('camera.png')) {
-                addCameraCoverage(fabricCanvas, img);
-            }
-
             fabricCanvas.renderAll();
         }, {
             crossOrigin: 'anonymous'
