@@ -1,67 +1,61 @@
 export function addCameraCoverage(fabricCanvas, cameraIcon) {
-    // Define the coverage area as a triangle
-    const coverageArea = new fabric.Triangle({
-        width: 300, // Width of the coverage area
-        height: 300,
-        // Height of the coverage area
+    // Define the coverage shape: flat bottom, widening top
+    const coverageArea = new fabric.Polygon([
+        { x: 20, y: 0 },       // bottom-left (at camera)
+        { x: 40, y: 0 },      // bottom-right
+        { x: 120, y: -200 },  // top-right (farthest point)
+        { x: -60, y: -200 },  // top-left
+    ], {
         fill: new fabric.Gradient({
             type: 'linear',
-            gradientUnits: 'percentage', // Use percentage for gradient positioning
-            coords: { x1: 0, y1: 0, x2: 0, y2: 1 }, // Vertical gradient
+            gradientUnits: 'percentage',
+            coords: { x1: 0, y1: 0, x2: 0, y2: 1 },
             colorStops: [
-            { offset: 0, color: 'red' },
-            { offset: 0.7, color: 'orange' },
-            { offset: 1, color: 'lightgreen' },
+                { offset: 1, color: 'rgba(255, 0, 0, 0.5)' },
+                { offset: 0.5, color: 'rgba(255, 165, 0, 0.5)' },
+                { offset: 0, color: 'rgba(144, 238, 144, 0.5)' },
             ],
         }),
-        stroke: 'black', // Orange border
-        strokeWidth: 2,
-        selectable: false, // Coverage area should not be selectable
-        evented: false, // Prevent interaction with the coverage area
-        originX: 'center',
-        originY: 'center',
-
+        stroke: 'black',
+        strokeWidth: 1,
+        selectable: false,
+        evented: false,
+        originX: 'center',  // Anchor to top-left
+        originY: 'bottom',
     });
 
-    // Rotate the camera icon to face downward (adjust based on the icon's default orientation)
-    cameraIcon.set({
-        angle: 0, // Rotate the camera icon to face the coverage area (adjust this value if the icon's default orientation is different)
-    });
+    cameraIcon.set({ angle: 0 });
 
     const updateCoveragePosition = () => {
         const iconPos = cameraIcon.getCenterPoint();
         const iconHeight = cameraIcon.getScaledHeight() / 2;
-        const offsetDistance = iconHeight + (coverageArea.getScaledHeight() / 2);
-    
+
+        // Offset so the polygon starts just below the camera icon
+        const offsetDistance = iconHeight + 20;
+
         const angleRad = fabric.util.degreesToRadians(cameraIcon.angle);
         const offsetX = Math.cos(angleRad) * offsetDistance;
         const offsetY = Math.sin(angleRad) * offsetDistance;
-    
+
         coverageArea.set({
             left: iconPos.x + offsetX,
             top: iconPos.y + offsetY,
-            angle: cameraIcon.angle + 270 // or +180 if the triangle needs to flip
+            angle: cameraIcon.angle + 90
         });
-    
+
         fabricCanvas.renderAll();
     };
 
-    // Initial positioning
     updateCoveragePosition();
-
-    // Add the coverage area to the canvas
     fabricCanvas.add(coverageArea);
-    fabricCanvas.sendToBack(coverageArea); // Ensure the coverage area is behind the icon
 
-    // Bind the coverage area to the camera icon so they move together
     cameraIcon.on('moving', updateCoveragePosition);
     cameraIcon.on('scaling', updateCoveragePosition);
     cameraIcon.on('rotating', () => {
-        coverageArea.set('angle', cameraIcon.angle + 180); // Keep the coverage area 180 degrees relative to the camera icon
+        coverageArea.set('angle', cameraIcon.angle);
         updateCoveragePosition();
     });
 
-    // Remove the coverage area when the camera icon is deleted
     cameraIcon.on('removed', () => {
         fabricCanvas.remove(coverageArea);
     });
