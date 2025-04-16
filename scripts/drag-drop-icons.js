@@ -37,7 +37,7 @@ export function initDragDropIcons(fabricCanvas) {
                 scaleX: 60 / img.width,
                 scaleY: 60 / img.height,
                 selectable: true,
-                hasControls: true,
+                hasControls: false,
                 cornerSize: 8,
                 cornerColor: '#FE8800',
                 cornerStrokeColor: '#000000',
