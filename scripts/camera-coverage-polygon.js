@@ -167,7 +167,7 @@ export function addCameraCoveragePolygon(fabricCanvas, cameraIcon) {
 
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                const sensitivity = 0.004;
+                const sensitivity = 0.006;
                 const scaleDelta = (distance - baseRadius) * sensitivity;
                 let newScale = Math.max(0.5, Math.min(2, 1 + scaleDelta));
 

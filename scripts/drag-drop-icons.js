@@ -69,7 +69,12 @@ export function initDragDropIcons(fabricCanvas) {
 
     document.addEventListener('keydown', (e) => {
         if ((e.key === 'Delete' || e.key === 'Backspace') && fabricCanvas.getActiveObject()) {
-            fabricCanvas.remove(fabricCanvas.getActiveObject());
+            const activeObj = fabricCanvas.getActiveObject();
+    
+            // Manually trigger 'removed' event so listeners run
+            activeObj.fire('removed');
+    
+            fabricCanvas.remove(activeObj);
             fabricCanvas.discardActiveObject();
             fabricCanvas.renderAll();
         }
