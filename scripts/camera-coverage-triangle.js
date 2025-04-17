@@ -1,25 +1,22 @@
-export function addCameraCoverage(fabricCanvas, cameraIcon) {
+export function addCameraCoverageTriangle(fabricCanvas, cameraIcon) {
     const baseRadius = 100;
     let radius = baseRadius;
     let isRotating = false; // Tracks rotation interaction
     let isDragging = false; // Tracks camera dragging
 
-    const coverageArea = new fabric.Polygon([
-        { x: -50, y: 0 },
-        { x: 50, y: 0 },
-        { x: 200, y: -200 },
-        { x: -200, y: -200 },
-    ], {
+    const coverageArea = new fabric.Triangle({
         fill: new fabric.Gradient({
             type: 'linear',
             gradientUnits: 'percentage',
             coords: { x1: 0, y1: 0, x2: 0, y2: 1 },
             colorStops: [
-                { offset: 1, color: 'rgba(255, 0, 0, 0.25)' },
+                { offset: 0, color: 'rgba(255, 0, 0, 0.25)' },
                 { offset: 0.5, color: 'rgba(255, 165, 0, 0.25)' },
-                { offset: 0, color: 'rgba(144, 238, 144, 0.25)' },
+                { offset: 1, color: 'rgba(144, 238, 144, 0.25)' },
             ],
         }),
+        height: 200,
+        width: 100,
         stroke: 'black',
         strokeWidth: 1,
         originX: 'center',
@@ -68,7 +65,7 @@ export function addCameraCoverage(fabricCanvas, cameraIcon) {
             coverageArea.set({
                 left: camCenter.x + offsetX,
                 top: camCenter.y + offsetY,
-                angle: angleDegrees + 90,
+                angle: angleDegrees + 270,
                 scaleX: scale,
                 scaleY: scale,
             });

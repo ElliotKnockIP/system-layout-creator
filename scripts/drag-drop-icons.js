@@ -1,4 +1,6 @@
-import { addCameraCoverage } from './camera-coverage.js';
+import { addCameraCoverageTriangle } from './camera-coverage-triangle.js';
+import { addCameraCoveragePolygon } from './camera-coverage-polygon.js';
+import { addCameraCoverageCircle } from './camera-coverage-circle.js';
 
 export function initDragDropIcons(fabricCanvas) {
     const icons = document.querySelectorAll('.system-icons img');
@@ -52,7 +54,11 @@ export function initDragDropIcons(fabricCanvas) {
 
             // Check if the dropped icon is the camera icon (based on the src)
             if (imgSrc.includes('camera.png')) {
-                addCameraCoverage(fabricCanvas, img);
+                addCameraCoverageTriangle(fabricCanvas, img);
+            } else if (imgSrc.includes('camera2.png')) {
+                addCameraCoveragePolygon(fabricCanvas, img);
+            } else if (imgSrc.includes('camera3.png')) {
+                addCameraCoverageCircle(fabricCanvas, img);
             }
 
             fabricCanvas.renderAll();
