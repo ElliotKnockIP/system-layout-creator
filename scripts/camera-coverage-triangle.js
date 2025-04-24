@@ -1,8 +1,10 @@
 export function addCameraCoverageTriangle(fabricCanvas, cameraIcon) {
     const baseRadius = 100;
     let radius = baseRadius;
-    let isRotating = false; // Tracks rotation interaction
-    let isDragging = false; // Tracks camera dragging
+    let isRotating = false;
+    let isDragging = false;
+    let isResizing = false;
+    let resizingSide = null;
 
     const coverageArea = new fabric.Triangle({
         fill: new fabric.Gradient({
@@ -16,7 +18,7 @@ export function addCameraCoverageTriangle(fabricCanvas, cameraIcon) {
             ],
         }),
         height: 200,
-        width: 100,
+        width: baseRadius,
         stroke: 'black',
         strokeWidth: 1,
         originX: 'center',
@@ -33,8 +35,8 @@ export function addCameraCoverageTriangle(fabricCanvas, cameraIcon) {
         lockSkewingY: true,
     });
 
-    fabric.Image.fromURL('./images/rotate-icon.png', (img) => {
-        const rotationIcon = img.set({
+    fabric.Image.fromURL('./images/rotate-icon.png', (rotateImg) => {
+        const rotationIcon = rotateImg.set({
             scaleX: 0.03,
             scaleY: 0.03,
             originX: 'center',
@@ -49,107 +51,181 @@ export function addCameraCoverageTriangle(fabricCanvas, cameraIcon) {
             lockScalingY: true,
             lockRotation: true,
             evented: true,
-            visible: false, // Initially hidden
+            visible: false,
+        });
+
+        const leftResizeIcon = new fabric.Circle({
+            radius: 8,
+            fill: 'blue',
+            stroke: 'black',
+            strokeWidth: 1,
+            originX: 'center',
+            originY: 'center',
+            hasControls: false,
+            hasBorders: false,
+            selectable: false,
+            hoverCursor: 'ew-resize',
+            lockRotation: true,
+            visible: false,
+        });
+
+        const rightResizeIcon = new fabric.Circle({
+            radius: 8,
+            fill: 'blue',
+            stroke: 'black',
+            strokeWidth: 1,
+            originX: 'center',
+            originY: 'center',
+            hasControls: false,
+            hasBorders: false,
+            selectable: false,
+            hoverCursor: 'ew-resize',
+            lockRotation: true,
+            visible: false,
         });
 
         cameraIcon.coverageArea = coverageArea;
         cameraIcon.rotationIcon = rotationIcon;
+        cameraIcon.leftResizeIcon = leftResizeIcon;
+        cameraIcon.rightResizeIcon = rightResizeIcon;
 
-        function updateCoveragePosition(angleDegrees, scale = 1) {
+        function updateCoveragePosition(angleDegrees, scale = 1, width = baseRadius) {
             const camCenter = cameraIcon.getCenterPoint();
             const angleRad = fabric.util.degreesToRadians(angleDegrees);
 
             const offsetX = Math.cos(angleRad) * radius;
             const offsetY = Math.sin(angleRad) * radius;
 
+            const triangleCenter = {
+                x: camCenter.x + offsetX,
+                y: camCenter.y + offsetY,
+            };
+
             coverageArea.set({
-                left: camCenter.x + offsetX,
-                top: camCenter.y + offsetY,
+                left: triangleCenter.x,
+                top: triangleCenter.y,
                 angle: angleDegrees + 270,
                 scaleX: scale,
                 scaleY: scale,
+                width: width,
             });
 
-            const iconOffset = 0;
             rotationIcon.set({
-                left: camCenter.x + offsetX + Math.cos(angleRad) * (radius + iconOffset),
-                top: camCenter.y + offsetY + Math.sin(angleRad) * (radius + iconOffset),
+                left: triangleCenter.x + Math.cos(angleRad) * radius,
+                top: triangleCenter.y + Math.sin(angleRad) * radius,
             });
 
             coverageArea.setCoords();
+
+            const leftBaseCorner = coverageArea.getPointByOrigin('left', 'bottom');
+            const rightBaseCorner = coverageArea.getPointByOrigin('right', 'bottom');
+
+            leftResizeIcon.set({
+                left: leftBaseCorner.x,
+                top: leftBaseCorner.y,
+            });
+
+            rightResizeIcon.set({
+                left: rightBaseCorner.x,
+                top: rightBaseCorner.y,
+            });
+
+            leftResizeIcon.setCoords();
+            rightResizeIcon.setCoords();
             rotationIcon.setCoords();
+
             fabricCanvas.requestRenderAll();
         }
 
         updateCoveragePosition(0);
 
         cameraIcon.on('mousedown', () => {
-            isDragging = true; // Start dragging
-            rotationIcon.set({ visible: true }); // Show rotation icon
+            isDragging = true;
+            rotationIcon.set({ visible: true });
+            leftResizeIcon.set({ visible: true });
+            rightResizeIcon.set({ visible: true });
             fabricCanvas.requestRenderAll();
         });
 
         cameraIcon.on('moving', () => {
-            isDragging = true; // Continue dragging
-            rotationIcon.set({ visible: true }); // Keep rotation icon visible
-            const currentAngle = coverageArea.angle - 90; // Maintain current angle
+            isDragging = true;
+            const currentAngle = coverageArea.angle - 270;
             const currentScale = coverageArea.scaleX;
-            updateCoveragePosition(currentAngle, currentScale); // Update position only
-            fabricCanvas.requestRenderAll();
+            const currentWidth = coverageArea.width;
+            updateCoveragePosition(currentAngle, currentScale, currentWidth);
         });
 
         cameraIcon.on('mouseup', () => {
-            isDragging = false; // End dragging
-            fabricCanvas.setActiveObject(cameraIcon); // Ensure camera stays selected
-            rotationIcon.set({ visible: true }); // Keep rotation icon visible
-            fabricCanvas.requestRenderAll();
+            isDragging = false;
+            fabricCanvas.setActiveObject(cameraIcon);
         });
 
         cameraIcon.on('removed', () => {
-            if (cameraIcon.coverageArea) {
-                fabricCanvas.remove(cameraIcon.coverageArea);
-            }
-            if (cameraIcon.rotationIcon) {
-                fabricCanvas.remove(cameraIcon.rotationIcon);
-            }
+            fabricCanvas.remove(coverageArea);
+            fabricCanvas.remove(rotationIcon);
+            fabricCanvas.remove(leftResizeIcon);
+            fabricCanvas.remove(rightResizeIcon);
         });
 
-        // Show rotation icon when camera is selected
         cameraIcon.on('selected', () => {
             rotationIcon.set({ visible: true });
+            leftResizeIcon.set({ visible: true });
+            rightResizeIcon.set({ visible: true });
             fabricCanvas.requestRenderAll();
         });
 
-        // Hide rotation icon when camera is deselected
         cameraIcon.on('deselected', () => {
-            if (!isDragging && !isRotating) { // Only hide if not interacting
+            if (!isDragging && !isRotating && !isResizing) {
                 rotationIcon.set({ visible: false });
+                leftResizeIcon.set({ visible: false });
+                rightResizeIcon.set({ visible: false });
                 fabricCanvas.requestRenderAll();
             }
         });
 
         rotationIcon.on('mousedown', (opt) => {
-            isRotating = true; // Start rotation
-            fabricCanvas.setActiveObject(cameraIcon); // Keep camera selected
+            isRotating = true;
+            fabricCanvas.setActiveObject(cameraIcon);
+            fabricCanvas.selection = false;
+            opt.e.preventDefault();
+            opt.e.stopPropagation();
+        });
+
+        leftResizeIcon.on('mousedown', (opt) => {
+            isResizing = true;
+            resizingSide = 'left';
+            fabricCanvas.setActiveObject(cameraIcon);
+            fabricCanvas.selection = false;
+            opt.e.preventDefault();
+            opt.e.stopPropagation();
+        });
+
+        rightResizeIcon.on('mousedown', (opt) => {
+            isResizing = true;
+            resizingSide = 'right';
+            fabricCanvas.setActiveObject(cameraIcon);
             fabricCanvas.selection = false;
             opt.e.preventDefault();
             opt.e.stopPropagation();
         });
 
         fabricCanvas.on('mouse:up', () => {
-            isRotating = false; // End rotation
-            isDragging = false; // End dragging
+            isRotating = false;
+            isDragging = false;
+            isResizing = false;
+            resizingSide = null;
             fabricCanvas.selection = true;
-            if (fabricCanvas.getActiveObject() === cameraIcon) {
-                rotationIcon.set({ visible: true }); // Keep visible if camera selected
-            } else {
-                rotationIcon.set({ visible: false }); // Hide if camera not selected
-            }
+
+            const active = fabricCanvas.getActiveObject() === cameraIcon;
+            rotationIcon.set({ visible: active });
+            leftResizeIcon.set({ visible: active });
+            rightResizeIcon.set({ visible: active });
+
             fabricCanvas.requestRenderAll();
         });
 
         fabricCanvas.on('mouse:move', (opt) => {
-            if (!isRotating && !isDragging) return;
+            if (!isRotating && !isDragging && !isResizing) return;
 
             opt.e.preventDefault();
             const pointer = fabricCanvas.getPointer(opt.e);
@@ -158,32 +234,40 @@ export function addCameraCoverageTriangle(fabricCanvas, cameraIcon) {
             if (isRotating) {
                 const dx = pointer.x - camCenter.x;
                 const dy = pointer.y - camCenter.y;
-
                 const angleRad = Math.atan2(dy, dx);
                 const angleDeg = fabric.util.radiansToDegrees(angleRad);
 
                 const distance = Math.sqrt(dx * dx + dy * dy);
-
                 const sensitivity = 0.006;
                 const scaleDelta = (distance - baseRadius) * sensitivity;
-                let newScale = Math.max(0.5, Math.min(2, 1 + scaleDelta));
+                const newScale = Math.max(0.5, Math.min(2, 1 + scaleDelta));
 
                 radius = baseRadius * newScale;
-
-                updateCoveragePosition(angleDeg, newScale);
+                updateCoveragePosition(angleDeg, newScale, coverageArea.width);
             } else if (isDragging) {
-                // When dragging, maintain current angle and scale
-                const currentAngle = coverageArea.angle - 90;
+                const currentAngle = coverageArea.angle - 270;
                 const currentScale = coverageArea.scaleX;
-                updateCoveragePosition(currentAngle, currentScale);
+                const currentWidth = coverageArea.width;
+                updateCoveragePosition(currentAngle, currentScale, currentWidth);
+            } else if (isResizing) {
+                const dx = pointer.x - camCenter.x;
+                const dy = pointer.y - camCenter.y;
+                const angleRad = fabric.util.degreesToRadians(coverageArea.angle - 270);
+                const projectedDistance = dx * Math.cos(angleRad + Math.PI / 2) + dy * Math.sin(angleRad + Math.PI / 2);
+                let newWidth = baseRadius + projectedDistance * 2;
+                newWidth = Math.max(50, Math.min(300, newWidth));
+
+                const currentAngle = coverageArea.angle - 270;
+                const currentScale = coverageArea.scaleX;
+                updateCoveragePosition(currentAngle, currentScale, newWidth);
             }
         });
 
-        // Add elements to canvas
         fabricCanvas.add(coverageArea);
         fabricCanvas.add(rotationIcon);
+        fabricCanvas.add(leftResizeIcon);
+        fabricCanvas.add(rightResizeIcon);
 
-        // Reorder objects: place coverageArea just below its own cameraIcon
         const camIndex = fabricCanvas.getObjects().indexOf(cameraIcon);
         if (camIndex !== -1) {
             fabricCanvas.insertAt(coverageArea, camIndex);
@@ -191,10 +275,13 @@ export function addCameraCoverageTriangle(fabricCanvas, cameraIcon) {
 
         cameraIcon.bringToFront();
         rotationIcon.bringToFront();
+        leftResizeIcon.bringToFront();
+        rightResizeIcon.bringToFront();
 
-        // Ensure camera is selected and rotation icon is visible after adding
         fabricCanvas.setActiveObject(cameraIcon);
         rotationIcon.set({ visible: true });
+        leftResizeIcon.set({ visible: true });
+        rightResizeIcon.set({ visible: true });
         fabricCanvas.requestRenderAll();
     });
 
