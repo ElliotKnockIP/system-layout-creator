@@ -1,51 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Layout Creator</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/x-icon" href="/images/ipfavicon.jpg" />
+  </head>
+  <body>
     <main>
+      <div class="left-block">
+        <canvas id="layout-canvas" width="1000px" height="600px"></canvas>
+      </div>
 
-        <div class="left-block">
-            <canvas id="layout-canvas" width="1000" height="500"></canvas>
+      <div class="right-block">
+        <div class="buttons">
+          <button id="choose-background-btn">Choose Background</button>
+          <input id="choose-background" type="file" style="display: none" />
+          <button id="clear" type="button">Clear</button>
+          <button id="download" type="button">Download</button>
+          <button id="adding-line-btn" type="button">Add Line</button>
+          <button id="deactivate-adding-shape-btn" type="button">
+            Deactivate Line
+          </button>
         </div>
-        
-        <div class="right-block">
-            <div class="buttons">
-                <button onclick="document.getElementById('choose-background').click()">Choose Background</button>
-                <input type="file" id="choose-background" style="display: none;"/>
+        <div class="system-icons">
+          <div class="row">
+            <img src="images/camera.png" />
+            <img src="images/camera2.png" />
+          </div>
 
-                <button id="clear" type="button">Clear</button>
-                <button id="download" type="button">Download</button>
-            </div>
-            <div class="system-icons">
-                <div class="row">
-                    <img src="images/camera.png">
-                    <img src="images/camera2.png">
-                </div>
+          <div class="row">
+            <img src="images/camera3.png" />
+            <img src="images/intruderalarm.png" />
+          </div>
 
-                <div class="row">
-                    <img src="images/camera3.png">
-                    <img src="images/intruderalarm.png">
-                </div>
-
-                <div class="row">
-                    <img src="images/firealarm.png">
-                    <img src="images/panicalarm.png">
-                </div>
-                <div class="row">
-                    <img src="images/access.png">
-                    <img src="images/extinguisher.png">
-                </div>
-            </div>
+          <div class="row">
+            <img src="images/firealarm.png" />
+            <img src="images/panicalarm.png" />
+          </div>
+          <div class="row">
+            <img src="images/access.png" />
+            <img src="images/extinguisher.png" />
+          </div>
         </div>
-
+      </div>
     </main>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script type="module" src="scripts/main.js"></script>
-</body>
+  </body>
 </html>
