@@ -8,9 +8,10 @@ window.onload = function () {
   const input = document.getElementById("choose-background");
   const clearButton = document.getElementById("clear");
   const downloadButton = document.getElementById("download");
+  const addLineButton = document.getElementById("adding-line-btn");
 
   initImageUpload(fabricCanvas, input);
   initCanvasControls(fabricCanvas, clearButton, downloadButton);
   initDragDropIcons(fabricCanvas);
-  initAddWalls(fabricCanvas);
+  initAddWalls(fabricCanvas, addLineButton);
 };
