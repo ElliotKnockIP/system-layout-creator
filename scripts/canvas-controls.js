@@ -60,6 +60,7 @@ export function initCanvasControls(fabricCanvas, clearButton, downloadButton, ba
           left: left,
           top: top,
           selectable: false,
+          hoverCursor: "default",
         });
 
         fabricCanvas.clear();

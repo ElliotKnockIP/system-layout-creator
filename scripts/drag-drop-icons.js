@@ -27,17 +27,25 @@ export function initDragDropIcons(fabricCanvas) {
 
     const imgSrc = e.dataTransfer.getData("text/plain");
     const rect = canvasElement.getBoundingClientRect();
-    const scaleX = fabricCanvas.getWidth() / rect.width;
-    const scaleY = fabricCanvas.getHeight() / rect.height;
-    const left = (e.clientX - rect.left) * scaleX;
-    const top = (e.clientY - rect.top) * scaleY;
+
+    // Get the mouse coordinates relative to the canvas
+    const clientX = e.clientX - rect.left;
+    const clientY = e.clientY - rect.top;
+
+    // Get the current viewport transform
+    const vpt = fabricCanvas.viewportTransform;
+    const zoom = fabricCanvas.getZoom();
+
+    // Adjust coordinates to account for zoom and pan
+    const canvasX = (clientX - vpt[4]) / zoom;
+    const canvasY = (clientY - vpt[5]) / zoom;
 
     fabric.Image.fromURL(
       imgSrc,
       (img) => {
         img.set({
-          left: left - 30,
-          top: top - 30,
+          left: canvasX - 30,
+          top: canvasY - 30,
           scaleX: 60 / img.width,
           scaleY: 60 / img.height,
           selectable: true,
@@ -54,7 +62,7 @@ export function initDragDropIcons(fabricCanvas) {
         fabricCanvas.add(img);
         fabricCanvas.setActiveObject(img);
 
-        // Check if the dropped icon is the camera icon (based on the src)
+        // Add camera coverage if applicable
         if (imgSrc.includes("camera.png")) {
           addCameraCoverageTriangle(fabricCanvas, img);
         } else if (imgSrc.includes("camera2.png")) {
@@ -65,17 +73,12 @@ export function initDragDropIcons(fabricCanvas) {
 
         fabricCanvas.renderAll();
       },
-      {
-        crossOrigin: "anonymous",
-      }
+      { crossOrigin: "anonymous" }
     );
   });
 
   document.addEventListener("keydown", (e) => {
-    if (
-      (e.key === "Delete" || e.key === "Backspace") &&
-      fabricCanvas.getActiveObject()
-    ) {
+    if ((e.key === "Delete" || e.key === "Backspace") && fabricCanvas.getActiveObject()) {
       const activeObj = fabricCanvas.getActiveObject();
       // Only handle deletions for images (icons)
       if (activeObj.type === "image") {

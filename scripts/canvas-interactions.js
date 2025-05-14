@@ -3,6 +3,8 @@ export function initCanvasInteractions(fabricCanvas) {
   let lastPosX = 0;
   let lastPosY = 0;
 
+  fabricCanvas.defaultCursor = "move";
+
   fabricCanvas.on("mouse:down", function () {
     fabricCanvas.selection = false; // Disable selection during drag
   });

@@ -11,9 +11,7 @@ export function initAddWalls(fabricCanvas, addLineButton) {
 
   // Ensure circles are always on top when any object is added
   fabricCanvas.on("object:added", (e) => {
-    fabricCanvas
-      .getObjects("circle")
-      .forEach((circle) => circle.bringToFront());
+    fabricCanvas.getObjects("circle").forEach((circle) => circle.bringToFront());
     fabricCanvas.requestRenderAll();
   });
 
@@ -91,18 +89,15 @@ export function initAddWalls(fabricCanvas, addLineButton) {
       }
 
       // Create the actual line, non-selectable during drawing and non-draggable
-      const newLine = new fabric.Line(
-        [lastPoint.x, lastPoint.y, pointer.x, pointer.y],
-        {
-          stroke: "red",
-          strokeWidth: 3,
-          selectable: false,
-          evented: true,
-          hasControls: false,
-          lockMovementX: true,
-          lockMovementY: true,
-        }
-      );
+      const newLine = new fabric.Line([lastPoint.x, lastPoint.y, pointer.x, pointer.y], {
+        stroke: "red",
+        strokeWidth: 3,
+        selectable: false,
+        evented: true,
+        hasControls: false,
+        lockMovementX: true,
+        lockMovementY: true,
+      });
 
       fabricCanvas.add(newLine);
       lineSegments.push({
@@ -124,16 +119,13 @@ export function initAddWalls(fabricCanvas, addLineButton) {
     const pointer = fabricCanvas.getPointer(o.e);
 
     if (!currentLine) {
-      currentLine = new fabric.Line(
-        [lastPoint.x, lastPoint.y, pointer.x, pointer.y],
-        {
-          stroke: "red",
-          strokeWidth: 3,
-          strokeDashArray: [5, 5],
-          selectable: false,
-          evented: false,
-        }
-      );
+      currentLine = new fabric.Line([lastPoint.x, lastPoint.y, pointer.x, pointer.y], {
+        stroke: "red",
+        strokeWidth: 3,
+        strokeDashArray: [5, 5],
+        selectable: false,
+        evented: false,
+      });
       fabricCanvas.add(currentLine);
     } else {
       currentLine.set({ x2: pointer.x, y2: pointer.y });
@@ -155,26 +147,14 @@ export function initAddWalls(fabricCanvas, addLineButton) {
     if (e.key === "Delete" || e.key === "Backspace") {
       const activeObject = fabricCanvas.getActiveObject();
       if (activeObject && activeObject.type === "line") {
-        const segmentIndex = lineSegments.findIndex(
-          (seg) => seg.line === activeObject
-        );
+        const segmentIndex = lineSegments.findIndex((seg) => seg.line === activeObject);
         if (segmentIndex !== -1) {
           const segment = lineSegments[segmentIndex];
           fabricCanvas.remove(segment.line);
 
           // Count how many segments use each circle
-          const startCircleUsage = lineSegments.filter(
-            (seg, idx) =>
-              idx !== segmentIndex &&
-              (seg.startCircle === segment.startCircle ||
-                seg.endCircle === segment.startCircle)
-          ).length;
-          const endCircleUsage = lineSegments.filter(
-            (seg, idx) =>
-              idx !== segmentIndex &&
-              (seg.startCircle === segment.endCircle ||
-                seg.endCircle === segment.endCircle)
-          ).length;
+          const startCircleUsage = lineSegments.filter((seg, idx) => idx !== segmentIndex && (seg.startCircle === segment.startCircle || seg.endCircle === segment.startCircle)).length;
+          const endCircleUsage = lineSegments.filter((seg, idx) => idx !== segmentIndex && (seg.startCircle === segment.endCircle || seg.endCircle === segment.endCircle)).length;
 
           // Remove circles only if they are not used by other segments
           if (startCircleUsage === 0) {
@@ -195,9 +175,7 @@ export function initAddWalls(fabricCanvas, addLineButton) {
   }
 
   function cleanupOrphanedCircles() {
-    const referencedCircles = new Set(
-      lineSegments.flatMap((seg) => [seg.startCircle, seg.endCircle])
-    );
+    const referencedCircles = new Set(lineSegments.flatMap((seg) => [seg.startCircle, seg.endCircle]));
     fabricCanvas.getObjects("circle").forEach((circle) => {
       if (!referencedCircles.has(circle)) {
         fabricCanvas.remove(circle);
@@ -211,9 +189,7 @@ export function initAddWalls(fabricCanvas, addLineButton) {
     currentLine = null;
 
     fabricCanvas.selection = true;
-    fabricCanvas
-      .getObjects("line")
-      .forEach((line) => line.set({ selectable: true }));
+    fabricCanvas.getObjects("line").forEach((line) => line.set({ selectable: true }));
     fabricCanvas.requestRenderAll();
 
     fabricCanvas.off("mouse:down", handleMouseDown);

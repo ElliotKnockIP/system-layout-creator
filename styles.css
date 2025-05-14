@@ -85,7 +85,7 @@ body {
 #sidebar {
   box-sizing: border-box;
   height: 100vh;
-  width: 350px;
+  width: 250px;
   padding: 5px 1em;
   background-color: var(--base-clr);
   border-right: 1px solid var(--line-clr);
@@ -195,4 +195,69 @@ body {
 
 #sidebar a {
   cursor: pointer;
+}
+
+/* Camera Search */
+#camera-manufacturer-options {
+  max-height: 150px;
+  overflow-y: auto;
+  display: none;
+
+  li {
+    background-color: #42434a;
+  }
+}
+
+#camera-manufacturer-options,
+#camera-model-options {
+  max-height: 150px;
+  overflow-y: auto;
+  display: none;
+}
+
+#camera-manufacturer-options li,
+#camera-model-options li {
+  background-color: #42434a;
+}
+
+#camera-manufacturer-options li a,
+#camera-model-options li a {
+  display: block;
+  padding: 0.5em;
+  color: var(--text-clr);
+  text-decoration: none;
+}
+
+#camera-manufacturer-options li a:hover,
+#camera-model-options li a:hover {
+  background-color: var(--hover-clr);
+}
+
+/* Model Search Input */
+#model-search:disabled {
+  background-color: #555;
+  color: #888;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+#camera-search,
+#model-search {
+  width: 100%;
+  padding: 0.5em;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 0.3em;
+  background-color: #42434a;
+  color: var(--text-clr);
+}
+
+#camera-search:focus,
+#model-search:focus {
+  outline: none;
+  background-color: #525360;
+}
+
+#add-camera-btn {
+  background-color: #42434a;
 }

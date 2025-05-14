@@ -19,4 +19,22 @@ window.onload = function () {
   initDragDropIcons(fabricCanvas);
   initAddWalls(fabricCanvas, addLineButton);
   initCanvasInteractions(fabricCanvas);
+
+  // Handle window resize
+  window.addEventListener("resize", () => {
+    // Update canvas dimensions
+    fabricCanvas.setDimensions({
+      width: container.clientWidth,
+      height: container.clientHeight,
+    });
+
+    // Optionally, adjust the viewport to maintain the current view
+    const vpt = fabricCanvas.viewportTransform;
+    const zoom = fabricCanvas.getZoom();
+    vpt[4] = (container.clientWidth - fabricCanvas.getWidth() * zoom) / 2;
+    vpt[5] = (container.clientHeight - fabricCanvas.getHeight() * zoom) / 2;
+    fabricCanvas.setViewportTransform(vpt);
+
+    fabricCanvas.requestRenderAll();
+  });
 };
