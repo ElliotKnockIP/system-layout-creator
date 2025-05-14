@@ -20,12 +20,14 @@ export function initAddWalls(fabricCanvas, addLineButton) {
     isAddingLine = true;
 
     fabricCanvas.selection = false;
-    // Disable selection for all non-circle objects during drawing
+    // Disable selection and set hoverCursor for all non-circle objects during drawing
     fabricCanvas.getObjects().forEach((obj) => {
       if (obj.type !== "circle") {
-        obj.set({ selectable: false });
+        obj.set({ selectable: false, hoverCursor: "crosshair" }); // Set hoverCursor to crosshair
       }
     });
+    fabricCanvas.defaultCursor = "crosshair"; // Set canvas default cursor
+    fabricCanvas.hoverCursor = "crosshair"; // Set canvas hover cursor
     fabricCanvas.on("mouse:down", handleMouseDown);
     fabricCanvas.on("mouse:move", handleMouseMove);
     fabricCanvas.requestRenderAll();
@@ -189,7 +191,19 @@ export function initAddWalls(fabricCanvas, addLineButton) {
     currentLine = null;
 
     fabricCanvas.selection = true;
-    fabricCanvas.getObjects("line").forEach((line) => line.set({ selectable: true }));
+    fabricCanvas.getObjects().forEach((obj) => {
+      if (obj.type === "line" && obj !== currentLine) {
+        obj.set({ selectable: true, hoverCursor: "pointer" }); // Restore line hover cursor
+      } else if (obj.type === "image") {
+        // Check if it's a camera icon by inspecting the src
+        const isCameraIcon = obj._element && obj._element.src && obj._element.src.includes("camera");
+        obj.set({ hoverCursor: isCameraIcon ? "move" : "default" }); // Restore camera icon or background image cursor
+      } else if (obj.type === "circle") {
+        obj.set({ selectable: true, hoverCursor: "pointer" }); // Restore circle hover cursor
+      }
+    });
+    fabricCanvas.defaultCursor = "move"; // Restore default cursor (as set in canvas-interactions.js)
+    fabricCanvas.hoverCursor = "default"; // Restore canvas hover cursor
     fabricCanvas.requestRenderAll();
 
     fabricCanvas.off("mouse:down", handleMouseDown);

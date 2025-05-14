@@ -34,6 +34,14 @@ export function initCameraCoverageUtils({ fabricCanvas, cameraIcon, coverageArea
       isDragging = true;
       rotationIcon.set({ visible: true });
       additionalIcons.forEach((icon) => icon.element.set({ visible: true }));
+      // Move coverage area just below camera icon but above other icons and coverage areas
+      const camIndex = fabricCanvas.getObjects().indexOf(cameraIcon);
+      if (camIndex !== -1) {
+        coverageArea.moveTo(camIndex); // Place coverage area just below camera icon
+      }
+      cameraIcon.bringToFront(); // Camera icon above coverage area
+      rotationIcon.bringToFront(); // Rotation icon on top
+      additionalIcons.forEach((icon) => icon.element.bringToFront());
       fabricCanvas.requestRenderAll();
     });
 
@@ -63,6 +71,14 @@ export function initCameraCoverageUtils({ fabricCanvas, cameraIcon, coverageArea
     cameraIcon.on("selected", () => {
       rotationIcon.set({ visible: true });
       additionalIcons.forEach((icon) => icon.element.set({ visible: true }));
+      // Move coverage area just below camera icon but above other icons and coverage areas
+      const camIndex = fabricCanvas.getObjects().indexOf(cameraIcon);
+      if (camIndex !== -1) {
+        coverageArea.moveTo(camIndex); // Place coverage area just below camera icon
+      }
+      cameraIcon.bringToFront(); // Camera icon above coverage area
+      rotationIcon.bringToFront(); // Rotation icon on top
+      additionalIcons.forEach((icon) => icon.element.bringToFront());
       fabricCanvas.requestRenderAll();
     });
 
@@ -135,9 +151,12 @@ export function initCameraCoverageUtils({ fabricCanvas, cameraIcon, coverageArea
     fabricCanvas.add(rotationIcon);
     additionalIcons.forEach((icon) => fabricCanvas.add(icon.element));
 
+    // Insert coverage area below the camera icon to ensure camera icon is clickable
     const camIndex = fabricCanvas.getObjects().indexOf(cameraIcon);
     if (camIndex !== -1) {
-      fabricCanvas.insertAt(coverageArea, camIndex);
+      fabricCanvas.insertAt(coverageArea, camIndex); // Coverage area below camera icon
+    } else {
+      fabricCanvas.sendToBack(coverageArea); // Fallback: send coverage area to back
     }
 
     cameraIcon.bringToFront();
@@ -169,6 +188,7 @@ export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
     hasControls: false,
     hasBorders: false,
     selectable: false,
+    evented: false, // Prevent coverage area from capturing mouse events
     hoverCursor: "default",
     lockMovementX: true,
     lockMovementY: true,

@@ -55,6 +55,7 @@ export function initDragDropIcons(fabricCanvas) {
           transparentCorners: false,
           borderColor: "#000000",
           borderScaleFactor: 2,
+          hoverCursor: imgSrc.includes("camera") ? "move" : "default",
         });
 
         fabricCanvas.add(img);
