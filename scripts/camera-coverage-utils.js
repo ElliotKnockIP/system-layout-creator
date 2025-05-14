@@ -1,17 +1,9 @@
-export function initCameraCoverageUtils({
-  fabricCanvas,
-  cameraIcon,
-  coverageArea,
-  updateCoveragePosition,
-  angleOffset = 90,
-  additionalIcons = [],
-  onMouseMove,
-  onMouseUp,
-}) {
+export function initCameraCoverageUtils({ fabricCanvas, cameraIcon, coverageArea, updateCoveragePosition, angleOffset = 90, additionalIcons = [], onMouseMove, onMouseUp }) {
   const baseRadius = 100;
   let isRotating = false;
   let isDragging = false;
   let initialRotationDistance = null;
+  let baseScale = 1; // Store the current scale when rotation starts
 
   fabric.Image.fromURL("./images/rotate-icon.png", (img) => {
     const rotationIcon = img.set({
@@ -92,6 +84,7 @@ export function initCameraCoverageUtils({
       const dx = pointer.x - camCenter.x;
       const dy = pointer.y - camCenter.y;
       initialRotationDistance = Math.sqrt(dx * dx + dy * dy);
+      baseScale = coverageArea.scaleX; // Capture the current scale
 
       opt.e.preventDefault();
       opt.e.stopPropagation();
@@ -100,6 +93,8 @@ export function initCameraCoverageUtils({
     fabricCanvas.on("mouse:up", (opt) => {
       isRotating = false;
       isDragging = false;
+      initialRotationDistance = null; // Reset initialRotationDistance
+      baseScale = coverageArea.scaleX; // Update baseScale to current scale
       fabricCanvas.selection = true;
       const active = fabricCanvas.getActiveObject() === cameraIcon;
       rotationIcon.set({ visible: active });
@@ -126,7 +121,7 @@ export function initCameraCoverageUtils({
         const distance = Math.sqrt(dx * dx + dy * dy);
         const sensitivity = 0.006;
         const scaleDelta = (distance - initialRotationDistance) * sensitivity;
-        const newScale = Math.max(0.5, Math.min(2, 1 + scaleDelta));
+        const newScale = Math.max(0.5, baseScale + scaleDelta); // Use baseScale instead of 1
 
         updateCoveragePosition(angleDeg, newScale);
       } else if (isDragging) {
