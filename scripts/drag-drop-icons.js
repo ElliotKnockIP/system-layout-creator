@@ -1,6 +1,4 @@
-import { addCameraCoverageTriangle } from "./camera-coverage-triangle.js";
-import { addCameraCoveragePolygon } from "./camera-coverage-polygon.js";
-import { addCameraCoverageCircle } from "./camera-coverage-circle.js";
+import { addCameraCoverage } from "./camera-coverage-utils.js";
 
 export function initDragDropIcons(fabricCanvas) {
   const icons = document.querySelectorAll(".system-icons img");
@@ -62,13 +60,13 @@ export function initDragDropIcons(fabricCanvas) {
         fabricCanvas.add(img);
         fabricCanvas.setActiveObject(img);
 
-        // Add camera coverage if applicable
+        // Add camera coverage based on image source
         if (imgSrc.includes("camera.png")) {
-          addCameraCoverageTriangle(fabricCanvas, img);
+          addCameraCoverage(fabricCanvas, img, "triangle");
         } else if (imgSrc.includes("camera2.png")) {
-          addCameraCoveragePolygon(fabricCanvas, img);
+          addCameraCoverage(fabricCanvas, img, "polygon");
         } else if (imgSrc.includes("camera3.png")) {
-          addCameraCoverageCircle(fabricCanvas, img);
+          addCameraCoverage(fabricCanvas, img, "circle");
         }
 
         fabricCanvas.renderAll();
@@ -80,7 +78,6 @@ export function initDragDropIcons(fabricCanvas) {
   document.addEventListener("keydown", (e) => {
     if ((e.key === "Delete" || e.key === "Backspace") && fabricCanvas.getActiveObject()) {
       const activeObj = fabricCanvas.getActiveObject();
-      // Only handle deletions for images (icons)
       if (activeObj.type === "image") {
         activeObj.fire("removed");
         fabricCanvas.remove(activeObj);
