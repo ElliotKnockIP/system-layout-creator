@@ -26,15 +26,12 @@ export function initDragDropIcons(fabricCanvas) {
     const imgSrc = e.dataTransfer.getData("text/plain");
     const rect = canvasElement.getBoundingClientRect();
 
-    // Get the mouse coordinates relative to the canvas
     const clientX = e.clientX - rect.left;
     const clientY = e.clientY - rect.top;
 
-    // Get the current viewport transform
     const vpt = fabricCanvas.viewportTransform;
     const zoom = fabricCanvas.getZoom();
 
-    // Adjust coordinates to account for zoom and pan
     const canvasX = (clientX - vpt[4]) / zoom;
     const canvasY = (clientY - vpt[5]) / zoom;
 
@@ -61,13 +58,18 @@ export function initDragDropIcons(fabricCanvas) {
         fabricCanvas.add(img);
         fabricCanvas.setActiveObject(img);
 
-        // Add camera coverage based on image source
         if (imgSrc.includes("camera.png")) {
           addCameraCoverage(fabricCanvas, img, "triangle");
         } else if (imgSrc.includes("camera2.png")) {
           addCameraCoverage(fabricCanvas, img, "polygon");
         } else if (imgSrc.includes("camera3.png")) {
           addCameraCoverage(fabricCanvas, img, "circle");
+        } else if (imgSrc.includes("camera4.png")) {
+          addCameraCoverage(fabricCanvas, img, "triangle2");
+        } else if (imgSrc.includes("camera5.png")) {
+          addCameraCoverage(fabricCanvas, img, "triangle3");
+        } else if (imgSrc.includes("camera6.png")) {
+          addCameraCoverage(fabricCanvas, img, "triangle4");
         }
 
         fabricCanvas.renderAll();

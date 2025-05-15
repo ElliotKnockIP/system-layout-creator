@@ -34,13 +34,12 @@ export function initCameraCoverageUtils({ fabricCanvas, cameraIcon, coverageArea
       isDragging = true;
       rotationIcon.set({ visible: true });
       additionalIcons.forEach((icon) => icon.element.set({ visible: true }));
-      // Move coverage area just below camera icon but above other icons and coverage areas
       const camIndex = fabricCanvas.getObjects().indexOf(cameraIcon);
       if (camIndex !== -1) {
-        coverageArea.moveTo(camIndex); // Place coverage area just below camera icon
+        coverageArea.moveTo(camIndex);
       }
-      cameraIcon.bringToFront(); // Camera icon above coverage area
-      rotationIcon.bringToFront(); // Rotation icon on top
+      cameraIcon.bringToFront();
+      rotationIcon.bringToFront();
       additionalIcons.forEach((icon) => icon.element.bringToFront());
       fabricCanvas.requestRenderAll();
     });
@@ -71,13 +70,12 @@ export function initCameraCoverageUtils({ fabricCanvas, cameraIcon, coverageArea
     cameraIcon.on("selected", () => {
       rotationIcon.set({ visible: true });
       additionalIcons.forEach((icon) => icon.element.set({ visible: true }));
-      // Move coverage area just below camera icon but above other icons and coverage areas
       const camIndex = fabricCanvas.getObjects().indexOf(cameraIcon);
       if (camIndex !== -1) {
-        coverageArea.moveTo(camIndex); // Place coverage area just below camera icon
+        coverageArea.moveTo(camIndex);
       }
-      cameraIcon.bringToFront(); // Camera icon above coverage area
-      rotationIcon.bringToFront(); // Rotation icon on top
+      cameraIcon.bringToFront();
+      rotationIcon.bringToFront();
       additionalIcons.forEach((icon) => icon.element.bringToFront());
       fabricCanvas.requestRenderAll();
     });
@@ -151,12 +149,11 @@ export function initCameraCoverageUtils({ fabricCanvas, cameraIcon, coverageArea
     fabricCanvas.add(rotationIcon);
     additionalIcons.forEach((icon) => fabricCanvas.add(icon.element));
 
-    // Insert coverage area below the camera icon to ensure camera icon is clickable
     const camIndex = fabricCanvas.getObjects().indexOf(cameraIcon);
     if (camIndex !== -1) {
-      fabricCanvas.insertAt(coverageArea, camIndex); // Coverage area below camera icon
+      fabricCanvas.insertAt(coverageArea, camIndex);
     } else {
-      fabricCanvas.sendToBack(coverageArea); // Fallback: send coverage area to back
+      fabricCanvas.sendToBack(coverageArea);
     }
 
     cameraIcon.bringToFront();
@@ -178,7 +175,6 @@ export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
   let coverageArea;
   let angleOffset;
 
-  // Common properties for all coverage areas
   const commonProps = {
     stroke: "black",
     strokeWidth: 1,
@@ -188,7 +184,7 @@ export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
     hasControls: false,
     hasBorders: false,
     selectable: false,
-    evented: false, // Prevent coverage area from capturing mouse events
+    evented: false,
     hoverCursor: "default",
     lockMovementX: true,
     lockMovementY: true,
@@ -198,65 +194,67 @@ export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
     lockSkewingY: true,
   };
 
-  // Define shape-specific properties
-  switch (shapeType) {
-    case "triangle":
-      coverageArea = new fabric.Triangle({
+  const createTriangle = (dimensions, color) => {
+    return new fabric.Triangle({
+      ...commonProps,
+      fill: new fabric.Gradient({
+        type: "linear",
+        gradientUnits: "percentage",
+        coords: { x1: 0, y1: 0, x2: 0, y2: 1 },
+        colorStops: [{ offset: 1, color }],
+      }),
+      height: dimensions.height,
+      width: dimensions.width,
+    });
+  };
+
+  const triangleConfigs = {
+    triangle: { height: 300, width: 100, color: "rgba(253, 250, 63, 0.25)" },
+    triangle2: { height: 150, width: 500, color: "rgba(255, 181, 181, 0.25)" },
+    triangle3: { height: 200, width: 375, color: "rgba(22, 178, 22, 0.25)" },
+    triangle4: { height: 300, width: 200, color: "rgba(83, 69, 233, 0.25)" },
+  };
+
+  if (triangleConfigs[shapeType]) {
+    coverageArea = createTriangle(triangleConfigs[shapeType], triangleConfigs[shapeType].color);
+    angleOffset = 270;
+  } else if (shapeType === "polygon") {
+    coverageArea = new fabric.Polygon(
+      [
+        { x: -50, y: 0 },
+        { x: 50, y: 0 },
+        { x: 200, y: -200 },
+        { x: -200, y: -200 },
+      ],
+      {
         ...commonProps,
         fill: new fabric.Gradient({
           type: "linear",
           gradientUnits: "percentage",
           coords: { x1: 0, y1: 0, x2: 0, y2: 1 },
           colorStops: [
-            { offset: 0, color: "rgba(255, 0, 0, 0.25)" },
+            { offset: 1, color: "rgba(255, 0, 0, 0.25)" },
             { offset: 0.5, color: "rgba(255, 165, 0, 0.25)" },
-            { offset: 1, color: "rgba(144, 238, 144, 0.25)" },
+            { offset: 0, color: "rgba(144, 238, 144, 0.25)" },
           ],
         }),
-        height: 200,
-        width: baseRadius,
-      });
-      angleOffset = 270;
-      break;
-    case "polygon":
-      coverageArea = new fabric.Polygon(
-        [
-          { x: -50, y: 0 },
-          { x: 50, y: 0 },
-          { x: 200, y: -200 },
-          { x: -200, y: -200 },
-        ],
-        {
-          ...commonProps,
-          fill: new fabric.Gradient({
-            type: "linear",
-            gradientUnits: "percentage",
-            coords: { x1: 0, y1: 0, x2: 0, y2: 1 },
-            colorStops: [
-              { offset: 1, color: "rgba(255, 0, 0, 0.25)" },
-              { offset: 0.5, color: "rgba(255, 165, 0, 0.25)" },
-              { offset: 0, color: "rgba(144, 238, 144, 0.25)" },
-            ],
-          }),
-        }
-      );
-      angleOffset = 90;
-      break;
-    case "circle":
-      coverageArea = new fabric.Circle({
-        ...commonProps,
-        radius: 100,
-        fill: new fabric.Gradient({
-          type: "linear",
-          gradientUnits: "percentage",
-          coords: { x1: 0, y1: 0, x2: 0, y2: 1 },
-          colorStops: [{ offset: 1, color: "rgba(163, 255, 226, 0.25)" }],
-        }),
-      });
-      angleOffset = 90;
-      break;
-    default:
-      throw new Error(`Unsupported shape type: ${shapeType}`);
+      }
+    );
+    angleOffset = 90;
+  } else if (shapeType === "circle") {
+    coverageArea = new fabric.Circle({
+      ...commonProps,
+      radius: 100,
+      fill: new fabric.Gradient({
+        type: "linear",
+        gradientUnits: "percentage",
+        coords: { x1: 0, y1: 0, x2: 0, y2: 1 },
+        colorStops: [{ offset: 1, color: "rgba(163, 255, 226, 0.25)" }],
+      }),
+    });
+    angleOffset = 90;
+  } else {
+    throw new Error(`Unsupported shape type: ${shapeType}`);
   }
 
   function updateCoveragePosition(angleDegrees, scale = 1) {
@@ -272,22 +270,21 @@ export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
     let rotationIconLeft = camCenter.x + offsetX;
     let rotationIconTop = camCenter.y + offsetY;
 
-    // Adjust positioning for each shape
-    if (shapeType === "triangle") {
-      coverageLeft = camCenter.x + offsetX;
-      coverageTop = camCenter.y + offsetY;
+    if (triangleConfigs[shapeType]) {
+      const triangleHeight = coverageArea.height;
+      const scaledHeight = triangleHeight * scale;
+      coverageLeft = camCenter.x + Math.cos(angleRad) * (scaledHeight / 2);
+      coverageTop = camCenter.y + Math.sin(angleRad) * (scaledHeight / 2);
       coverageAngle = angleDegrees + 270;
-      rotationIconLeft = camCenter.x + Math.cos(angleRad) * radius * 2; // Place at edge of triangle
-      rotationIconTop = camCenter.y + Math.sin(angleRad) * radius * 2;
+      const tipDistance = scaledHeight;
+      rotationIconLeft = camCenter.x + Math.cos(angleRad) * tipDistance;
+      rotationIconTop = camCenter.y + Math.sin(angleRad) * tipDistance;
     } else if (shapeType === "polygon") {
       coverageLeft = camCenter.x + offsetX;
       coverageTop = camCenter.y + offsetY;
-      // Place rotation icon at top edge of polygon (y: -200, scaled and rotated)
-      const edgeDistance = 100 * scale; // Distance to top edge (y: -200)
+      const edgeDistance = 100 * scale;
       rotationIconLeft = camCenter.x + Math.cos(angleRad) * (radius + edgeDistance);
       rotationIconTop = camCenter.y + Math.sin(angleRad) * (radius + edgeDistance);
-    } else if (shapeType === "circle") {
-      // Coverage area centered on camera, rotation icon at radius
     }
 
     coverageArea.set({
