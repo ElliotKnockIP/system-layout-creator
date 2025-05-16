@@ -33,6 +33,17 @@
         </li>
 
         <li>
+          <a id="google-maps-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
+              <path
+                d="m600-120-240-84-186 72q-20 8-37-4.5T120-170v-560q0-13 7.5-23t20.5-15l212-72 240 84 186-72q20-8 37 4.5t17 33.5v560q0 13-7.5 23T812-192l-212 72Zm-40-98v-468l-160-56v468l160 56Zm80 0 120-40v-474l-120 46v468Zm-440-10 120-46v-468l-120 40v474Zm440-458v468-468Zm-320-56v468-468Z"
+              />
+            </svg>
+            <span>Google Maps</span>
+          </a>
+        </li>
+
+        <li>
           <a id="clear">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
               <path
@@ -67,6 +78,8 @@
           <a id="add-text-btn">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M200-200v-80h560v80H200Zm76-160 164-440h80l164 440h-76l-38-112H392l-40 112h-76Zm138-176h132l-64-182h-4l-64 182Z" /></svg>
             <span>Add Text</span>
+
+            <input type="color" id="text-color-picker" value="#000000" />
           </a>
         </li>
 
@@ -124,18 +137,18 @@
           <ul class="sub-menu">
             <div class="device-icons">
               <div class="device-row">
-                <img src="images/camera.png" />
-                <img src="images/camera2.png" />
+                <img src="images/camera3mm.png" />
+                <img src="images/camera4mm.png" />
               </div>
 
               <div class="device-row">
-                <img src="images/camera3.png" />
-                <img src="images/camera4.png" />
+                <img src="images/camera6mm.png" />
+                <img src="images/camera12mm.png" />
               </div>
 
               <div class="device-row">
-                <img src="images/camera5.png" />
-                <img src="images/camera6.png" />
+                <img src="images/cameracircle.png" />
+                <img src="images/camerapolygon.png" />
               </div>
               <div class="device-row">
                 <img src="images/intruderalarm.png" />
@@ -153,25 +166,6 @@
             </div>
           </ul>
         </li>
-
-        <li>
-          <button onclick="toggleSubMenu(this)" class="dropdown-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
-              <path
-                d="m600-120-240-84-186 72q-20 8-37-4.5T120-170v-560q0-13 7.5-23t20.5-15l212-72 240 84 186-72q20-8 37 4.5t17 33.5v560q0 13-7.5 23T812-192l-212 72Zm-40-98v-468l-160-56v468l160 56Zm80 0 120-40v-474l-120 46v468Zm-440-10 120-46v-468l-120 40v474Zm440-458v468-468Zm-320-56v468-468Z"
-              />
-            </svg>
-            <span>Maps</span>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-              <path d="M480-361q-8 0-15-2.5t-13-8.5L268-556q-11-11-11-28t11-28q11-11 28-11t28 11l156 156 156-156q11-11 28-11t28 11q11 11 11 28t-11 28L508-372q-6 6-13 8.5t-15 2.5Z" />
-            </svg>
-          </button>
-          <ul class="sub-menu">
-            <div>
-              <li><a>Add new map</a></li>
-            </div>
-          </ul>
-        </li>
       </ul>
     </aside>
 
@@ -179,7 +173,7 @@
       <div class="canvas-container"><canvas id="canvas-layout"></canvas></div>
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <script type="module" src="scripts/main.js"></script>
   </body>
 </html>

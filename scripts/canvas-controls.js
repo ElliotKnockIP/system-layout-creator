@@ -75,4 +75,65 @@ export function initCanvasControls(fabricCanvas, clearButton, downloadButton, ba
       }
     );
   });
+
+  // Add text functionality
+  const addTextButton = document.getElementById("add-text-btn");
+  const textColorPicker = document.getElementById("text-color-picker");
+
+  addTextButton.addEventListener("click", function () {
+    const text = new fabric.IText("Enter Text", {
+      left: 100,
+      top: 100,
+      fontFamily: "Poppins, sans-serif",
+      fontSize: 20,
+      fill: "#000000",
+      selectable: true,
+      editable: true,
+      cursorColor: "#FE8800",
+      borderColor: "#FE8800",
+      borderScaleFactor: 2,
+      cornerSize: 8,
+      cornerColor: "#FE8800",
+      cornerStrokeColor: "#000000",
+      cornerStyle: "circle",
+      transparentCorners: false,
+      padding: 5,
+    });
+
+    fabricCanvas.add(text);
+    fabricCanvas.setActiveObject(text);
+    text.enterEditing();
+    fabricCanvas.requestRenderAll();
+  });
+
+  // Update text color when color picker changes
+  if (textColorPicker) {
+    textColorPicker.addEventListener("input", (e) => {
+      e.stopPropagation(); // Prevent click from bubbling to parent
+      const activeObject = fabricCanvas.getActiveObject();
+      if (activeObject && activeObject.type === "i-text") {
+        activeObject.set({ fill: textColorPicker.value });
+        fabricCanvas.requestRenderAll();
+      }
+    });
+
+    // Prevent click on color picker from triggering add text
+    textColorPicker.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  } else {
+    console.error("textColorPicker element not found");
+  }
+
+  // Delete text with Delete or Backspace key
+  document.addEventListener("keydown", (e) => {
+    if ((e.key === "Delete" || e.key === "Backspace") && fabricCanvas.getActiveObject()) {
+      const activeObj = fabricCanvas.getActiveObject();
+      if (activeObj.type === "i-text") {
+        fabricCanvas.remove(activeObj);
+        fabricCanvas.discardActiveObject();
+        fabricCanvas.requestRenderAll();
+      }
+    }
+  });
 }

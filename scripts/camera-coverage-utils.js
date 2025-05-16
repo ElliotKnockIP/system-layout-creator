@@ -1,5 +1,5 @@
 export function initCameraCoverageUtils({ fabricCanvas, cameraIcon, coverageArea, updateCoveragePosition, angleOffset = 90, additionalIcons = [], onMouseMove, onMouseUp }) {
-  const baseRadius = 100;
+  const baseRadius = 50; // Reduced from 100 to match smaller icon scale
   let isRotating = false;
   let isDragging = false;
   let initialRotationDistance = null;
@@ -171,7 +171,7 @@ export function initCameraCoverageUtils({ fabricCanvas, cameraIcon, coverageArea
 }
 
 export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
-  const baseRadius = 100;
+  const baseRadius = 50; // Reduced from 100 to match smaller icon scale
   let coverageArea;
   let angleOffset;
 
@@ -203,16 +203,16 @@ export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
         coords: { x1: 0, y1: 0, x2: 0, y2: 1 },
         colorStops: [{ offset: 1, color }],
       }),
-      height: dimensions.height,
-      width: dimensions.width,
+      height: dimensions.height * 0.5, // Scale down by 0.5 to match icon size
+      width: dimensions.width * 0.5, // Scale down by 0.5 to match icon size
     });
   };
 
   const triangleConfigs = {
-    triangle: { height: 300, width: 100, color: "rgba(253, 250, 63, 0.25)" },
-    triangle2: { height: 150, width: 500, color: "rgba(255, 181, 181, 0.25)" },
-    triangle3: { height: 200, width: 375, color: "rgba(22, 178, 22, 0.25)" },
-    triangle4: { height: 300, width: 200, color: "rgba(83, 69, 233, 0.25)" },
+    triangle3mm: { height: 150, width: 500, color: "rgba(255, 181, 181, 0.25)" },
+    triangle4mm: { height: 200, width: 375, color: "rgba(22, 178, 22, 0.25)" },
+    triangle6mm: { height: 300, width: 200, color: "rgba(83, 69, 233, 0.25)" },
+    triangle12mm: { height: 300, width: 100, color: "rgba(253, 250, 63, 0.25)" },
   };
 
   if (triangleConfigs[shapeType]) {
@@ -221,10 +221,10 @@ export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
   } else if (shapeType === "polygon") {
     coverageArea = new fabric.Polygon(
       [
-        { x: -50, y: 0 },
-        { x: 50, y: 0 },
-        { x: 200, y: -200 },
-        { x: -200, y: -200 },
+        { x: -25, y: 0 }, // Scaled down by 0.5
+        { x: 25, y: 0 }, // Scaled down by 0.5
+        { x: 100, y: -100 }, // Scaled down by 0.5
+        { x: -100, y: -100 }, // Scaled down by 0.5
       ],
       {
         ...commonProps,
@@ -244,7 +244,7 @@ export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
   } else if (shapeType === "circle") {
     coverageArea = new fabric.Circle({
       ...commonProps,
-      radius: 100,
+      radius: 50, // Scaled down by 0.5
       fill: new fabric.Gradient({
         type: "linear",
         gradientUnits: "percentage",
@@ -282,7 +282,7 @@ export function addCameraCoverage(fabricCanvas, cameraIcon, shapeType) {
     } else if (shapeType === "polygon") {
       coverageLeft = camCenter.x + offsetX;
       coverageTop = camCenter.y + offsetY;
-      const edgeDistance = 100 * scale;
+      const edgeDistance = 50 * scale; // Scaled down by 0.5
       rotationIconLeft = camCenter.x + Math.cos(angleRad) * (radius + edgeDistance);
       rotationIconTop = camCenter.y + Math.sin(angleRad) * (radius + edgeDistance);
     }

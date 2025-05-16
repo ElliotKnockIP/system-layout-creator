@@ -39,10 +39,10 @@ export function initDragDropIcons(fabricCanvas) {
       imgSrc,
       (img) => {
         img.set({
-          left: canvasX - 30,
-          top: canvasY - 30,
-          scaleX: 60 / img.width,
-          scaleY: 60 / img.height,
+          left: canvasX - 15, // Adjusted to center smaller icon (30/2)
+          top: canvasY - 15, // Adjusted to center smaller icon (30/2)
+          scaleX: 30 / img.width,
+          scaleY: 30 / img.height,
           selectable: true,
           hasControls: false,
           cornerSize: 8,
@@ -58,18 +58,18 @@ export function initDragDropIcons(fabricCanvas) {
         fabricCanvas.add(img);
         fabricCanvas.setActiveObject(img);
 
-        if (imgSrc.includes("camera.png")) {
-          addCameraCoverage(fabricCanvas, img, "triangle");
-        } else if (imgSrc.includes("camera2.png")) {
-          addCameraCoverage(fabricCanvas, img, "polygon");
-        } else if (imgSrc.includes("camera3.png")) {
+        if (imgSrc.includes("camera3mm.png")) {
+          addCameraCoverage(fabricCanvas, img, "triangle3mm");
+        } else if (imgSrc.includes("camera4mm.png")) {
+          addCameraCoverage(fabricCanvas, img, "triangle4mm");
+        } else if (imgSrc.includes("camera6mm.png")) {
+          addCameraCoverage(fabricCanvas, img, "triangle6mm");
+        } else if (imgSrc.includes("camera12mm.png")) {
+          addCameraCoverage(fabricCanvas, img, "triangle12mm");
+        } else if (imgSrc.includes("cameracircle.png")) {
           addCameraCoverage(fabricCanvas, img, "circle");
-        } else if (imgSrc.includes("camera4.png")) {
-          addCameraCoverage(fabricCanvas, img, "triangle2");
-        } else if (imgSrc.includes("camera5.png")) {
-          addCameraCoverage(fabricCanvas, img, "triangle3");
-        } else if (imgSrc.includes("camera6.png")) {
-          addCameraCoverage(fabricCanvas, img, "triangle4");
+        } else if (imgSrc.includes("camerapolygon.png")) {
+          addCameraCoverage(fabricCanvas, img, "polygon");
         }
 
         fabricCanvas.renderAll();
